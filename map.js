@@ -28,6 +28,7 @@ function addMarkersToMap(searchResults, layer, map) {
     layer.clearLayers();
 
     const searchResultOutput = document.querySelector("#search-results");
+    searchResultOutput.innerHTML = "";
 
     // take one location at a time from data.results
     for (let location of searchResults.results) {
@@ -38,7 +39,33 @@ function addMarkersToMap(searchResults, layer, map) {
         const address = location.location.formatted_address;
         const name = location.name;
         const marker = L.marker([lat, lng]);
-        marker.bindPopup(`<h1>${name}</h1><h2>${address}</h2>`);
+        marker.bindPopup(function(){
+
+            const divElement = document.createElement('div');
+            divElement.innerHTML = `
+                <h3>${location.name}</h3>
+                <img src="#"/>
+                <h4>${location.location.formatted_address}</h4>
+                <button class="clickButton">Click</button>
+            `;
+
+            async function getPicture() {
+                const photos = await getPhotoFromFourSquare(location.fsq_id);
+                const firstPhoto = photos[0];
+                const photoUrl = firstPhoto.prefix + '150x150' + firstPhoto.suffix;
+                divElement.querySelector("img").src = photoUrl;
+            }
+
+            getPicture();
+
+            divElement.querySelector(".clickButton").addEventListener("click", function(){
+                alert("hello world!");
+            });
+
+
+            // whatver element or HTML the function returns will be inside popup
+            return divElement;
+        });
 
         // add the marker to the map
         marker.addTo(layer);
