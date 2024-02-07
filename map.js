@@ -18,28 +18,48 @@ function createMap(mapContainerID, lat, lng) {
  * @param {[*]} searchResults Array of objects from FourSquare
  * @param {*} layer The Leaflet Layer to add to
  */
-function addMarkersToMap(searchResults, layer) {
-     // add markers:
-        // Example of how to get lat lng from the FourSquare results: 
-        // x.results[0].geocodes.main.latitude = lat
-        // x.results[0].goecodes.main.longtitude = lng
+function addMarkersToMap(searchResults, layer, map) {
+    // add markers:
+    // Example of how to get lat lng from the FourSquare results: 
+    // x.results[0].geocodes.main.latitude = lat
+    // x.results[0].goecodes.main.longtitude = lng
 
-        // remove all existing markers from the provided layer
-        layer.clearLayers();
+    // remove all existing markers from the provided layer
+    layer.clearLayers();
 
-        // take one location at a time from data.results
-        for (let location of searchResults.results) {
-            // create a marker for that location
+    const searchResultOutput = document.querySelector("#search-results");
+
+    // take one location at a time from data.results
+    for (let location of searchResults.results) {
+        // PART A: create a marker for that location
+        
+        const lat = location.geocodes.main.latitude;
+        const lng = location.geocodes.main.longitude;
+        const address = location.location.formatted_address;
+        const name = location.name;
+        const marker = L.marker([lat, lng]);
+        marker.bindPopup(`<h1>${name}</h1><h2>${address}</h2>`);
+
+        // add the marker to the map
+        marker.addTo(layer);
+
+        // PART B: create and display the search result
+        // 2. create a an element to display the result
+        const divElement = document.createElement('div');
+
+        // 3. add the element to the result element
+        divElement.innerHTML = location.name;
+
+        divElement.addEventListener("click", function () {
+            // get lat lng of the search result
             const lat = location.geocodes.main.latitude;
             const lng = location.geocodes.main.longitude;
-            const address = location.location.formatted_address;
-            const name = location.name;
-            const marker = L.marker([lat, lng]);
-            marker.bindPopup(`<h1>${name}</h1><h2>${address}</h2>`);
+            map.flyTo([lat, lng], 16);
+            marker.openPopup(); // simulate a click on marker
+        })
 
-            // add the marker to the map
-            marker.addTo(layer);
+        searchResultOutput.appendChild(divElement);
 
-            // repeat until there are no location left in data.results
-        }
+        // repeat until there are no location left in data.results
+    }
 }

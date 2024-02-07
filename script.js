@@ -8,17 +8,12 @@ document.addEventListener("DOMContentLoaded", function () {
         
         // find the lat lng of the center of the map
         const centerPoint = map.getBounds().getCenter();
-
-
-
-        console.log(centerPoint);
-        
         const data = await search(centerPoint.lat, centerPoint.lng, searchTerms);
 
-        
-        addMarkersToMap(data, searchLayer);
+        // adding markers to the map for the search results
+        addMarkersToMap(data, searchLayer, map);
 
-
+    
     })
 
 });

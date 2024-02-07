@@ -16,3 +16,10 @@
     min-width: 300px;
 
 }
+
+#search-results{
+    max-height: 300px;
+    max-width: 400px;
+    overflow-y: scroll;
+    background-color: pink;
+}
